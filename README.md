@@ -1,24 +1,24 @@
 STEP 1 : Clone the Repository from GitHub.(https://github.com/PradipKanzariya/WRPC)
 
-git clone https://github.com/PradipKanzariya/WRPC.git
+    git clone https://github.com/PradipKanzariya/WRPC.git
 
 1.1 Change current working path.
     
-cd WRPC
+    cd WRPC
 
 1.2 : Create Static Directory
 
-mkdir static
+    mkdir static
 
 STEP 2 : Create Virtual Environment
 
-virtualenv .venv
+    virtualenv .venv
     
-.\.venv\Scripts\activate
+    .\.venv\Scripts\activate
     
-pip install -r .\requirements.txt
+    pip install -r .\requirements.txt
 
 STEP 3 : Run the python files on browser
 
-command - streamlit run <file name>
+    command - streamlit run <file name>
 example - streamlit run .\WRPC_DSM_UI_Accounts.py
