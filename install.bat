@@ -1,51 +1,38 @@
 @echo off
 
 REM Define Python installer URL
-set "pythonInstallerUrl=https://www.python.org/ftp/python/3.10.2/python-3.10.2-amd64.exe"
+set "pythonZipUrl=https://www.python.org/ftp/python/3.10.2/python-3.10.2-embed-amd64.zip"
 
-REM Define Python installer file path
-set "pythonInstallerPath=%TEMP%\python-installer.exe"
+REM Define temporary directory to extract Python
+set "pythonTempDir=%TEMP%\python"
 
-REM Download Python installer
-powershell -Command "Invoke-WebRequest -Uri '%pythonInstallerUrl%' -OutFile '%pythonInstallerPath%'"
+REM Download Python embeddable package
+powershell -Command "Invoke-WebRequest -Uri '%pythonZipUrl%' -OutFile '%pythonTempDir%\python.zip'"
 
-REM Install Python silently
-echo Installing Python...
-"%pythonInstallerPath%" /quiet InstallAllUsers=1 PrependPath=1
+REM Unzip Python embeddable package
+powershell -Command "Expand-Archive -Path '%pythonTempDir%\python.zip' -DestinationPath '%pythonTempDir%'"
 
-REM Verify Python installation
-echo Verifying Python installation...
+REM Set Python directory
+set "pythonDir=%pythonTempDir%\Python310"
+
+REM Add Python to PATH
+set "PATH=%pythonDir%;%PATH%"
+
+REM Install pip
+python -m ensurepip
+
+REM Verify Python and pip installation
 python --version
+pip --version
 
-REM Clean up Python installer
-echo Cleaning up Python installer...
-del "%pythonInstallerPath%"
-
-REM Check if pip is installed
-pip --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Installing or upgrading pip...
-    
-    REM Install or upgrade pip
-    python -m pip install --upgrade pip
-
-    REM Verify pip installation
-    echo Verifying pip installation...
-    pip --version
-) else (
-    echo pip is already installed.
-)
-
-REM Check if requirements.txt exists
+REM Install dependencies from requirements.txt
 if exist requirements.txt (
-    echo Installing dependencies from requirements.txt...
-    python -m pip install -r requirements.txt
+    pip install -r requirements.txt
 ) else (
     echo requirements.txt not found. Skipping dependency installation.
 )
 
 REM Create directory
-echo Creating directory "static"...
 mkdir "static"
 
 echo All actions completed.
