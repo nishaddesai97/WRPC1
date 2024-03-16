@@ -3,7 +3,7 @@
 2. **Unzip the Directory**: Once the download is complete, unzip the downloaded file to reveal the repository directory.
 
 3. **Run the Installation Script**: Locate and double-click the "install.bat" file within the unzipped directory. This script automates the installation process, ensuring that Python and other necessary components are installed seamlessly.
-4. **Open Terminal**: To execute further commands, open the terminal by clicking on the location bar and typing cmd followed by pressing Enter.
+4. **Open Terminal**: To execute further commands, simply double-click on the open-terminal.
 
 5. **Execute the Desired File**: After opening the terminal, run the appropriate file using the following commands:
 
