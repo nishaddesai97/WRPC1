@@ -5,8 +5,6 @@
 3. **Run the Installation Script**: Locate and double-click the "install.bat" file within the unzipped directory. This script automates the installation process, ensuring that Python and other necessary components are installed seamlessly.
 
 4. **Execute the Desired File**: After installation, you can run the appropriate file from the repository using the following commands:
+- streamlit run WRPC_DSM_UI_Accounts.py
+- streamlit run WRPC_REGIONAL_ENERGY_ACCOUNTS.py
 
-* streamlit run
-* streamlit run
-* streamlit run
-* streamlit run 
