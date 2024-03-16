@@ -12,7 +12,7 @@
 streamlit run WRPC_REGIONAL_ENERGY_ACCOUNTS.py
 ```
 
-* WRPC DSM Ui Accounts
+* WRPC DSM UI Accounts
 ```
 streamlit run WRPC_DSM_UI_Accounts.py
 ```
