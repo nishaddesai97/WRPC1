@@ -13,7 +13,7 @@ if %errorlevel% neq 0 (
 
     REM Download Python installer
     echo Downloading Python installer...
-    powershell -Command "Invoke-WebRequest -Uri '%pythonInstallerUrl%' -OutFile '%pythonInstallerPath%'"
+    powershell -Command "(New-Object System.Net.WebClient).DownloadFile('%pythonInstallerUrl%', '%pythonInstallerPath%')"
 
     REM Install Python silently
     echo Installing Python silently...
