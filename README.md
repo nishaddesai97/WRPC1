@@ -7,11 +7,9 @@
 4. **Execute the Desired File**: After installation, you can run the appropriate file from the repository using the following commands:
 
 ```
-streamlit run WRPC_DSM_UI_Accounts.py
-```
-
-```
 streamlit run WRPC_REGIONAL_ENERGY_ACCOUNTS.py
 ```
 
-
+```
+streamlit run WRPC_DSM_UI_Accounts.py
+```
