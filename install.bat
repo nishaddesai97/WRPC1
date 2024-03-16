@@ -1,34 +1,25 @@
 @echo off
 
-REM Check if Python is installed
-python --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Installing Python...
-    
-    REM Define Python installer URL
-    set "pythonInstallerUrl=https://www.python.org/ftp/python/3.10.2/python-3.10.2-amd64.exe"
+REM Define Python installer URL
+set "pythonInstallerUrl=https://www.python.org/ftp/python/3.10.2/python-3.10.2-amd64.exe"
 
-    REM Define Python installer file path
-    set "pythonInstallerPath=%TEMP%\python-installer.exe"
+REM Define Python installer file path
+set "pythonInstallerPath=%TEMP%\python-installer.exe"
 
-    REM Download Python installer
-    echo Downloading Python installer...
-    powershell -Command "(New-Object System.Net.WebClient).DownloadFile('%pythonInstallerUrl%', '%pythonInstallerPath%')"
+REM Download Python installer
+powershell -Command "Invoke-WebRequest -Uri '%pythonInstallerUrl%' -OutFile '%pythonInstallerPath%'"
 
-    REM Install Python silently
-    echo Installing Python silently...
-    "%pythonInstallerPath%" /quiet InstallAllUsers=1 PrependPath=1
+REM Install Python silently
+echo Installing Python...
+"%pythonInstallerPath%" /quiet InstallAllUsers=1 PrependPath=1
 
-    REM Verify Python installation
-    echo Verifying Python installation...
-    python --version
+REM Verify Python installation
+echo Verifying Python installation...
+python --version
 
-    REM Clean up Python installer
-    echo Cleaning up Python installer...
-    del "%pythonInstallerPath%"
-) else (
-    echo Python is already installed.
-)
+REM Clean up Python installer
+echo Cleaning up Python installer...
+del "%pythonInstallerPath%"
 
 REM Check if pip is installed
 pip --version >nul 2>&1
