@@ -24,5 +24,6 @@ STEP 2 : Create Virtual Environment
 
 STEP 3 : Run the python files on browser
 
-    command - streamlit run <file name>
+    streamlit run <file name>
+    
 example - streamlit run .\WRPC_DSM_UI_Accounts.py
