@@ -6,5 +6,4 @@
 
 4. **Execute the Desired File**: After installation, you can run the appropriate file from the repository using the following commands:
 
-   - For Windows: Open Command Prompt or PowerShell, navigate to the repository directory, and execute the desired file using its filename.
-   - For Linux/macOS: Open Terminal, navigate to the repository directory, and execute the desired file using its filename.
+For Windows: 
