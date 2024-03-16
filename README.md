@@ -13,8 +13,12 @@ STEP 1 : Clone the Repository from GitHub.(https://github.com/PradipKanzariya/WR
 STEP 2 : Create Virtual Environment
 
     virtualenv .venv
+
+2.1 : Activate .venv
     
     .\.venv\Scripts\activate
+
+2.2 : Install requirements.txt file
     
     pip install -r .\requirements.txt
 
