@@ -30,14 +30,12 @@ def create_file(df, sheet_name):
         wb.create_sheet(title=sheet_name)
     ws2 = wb[sheet_name]
 
-    # Write specific column names as headers
-    headers = ['Date', 'Entity', 'Injection', 'Schedule', 'DSM Payable', 'DSM Receivable', 'Net DMC', 'PDF URL']
+    # Write DataFrame column names as headers
+    headers = list(df.columns)
     ws2.append(headers)
 
     # Append data to the worksheet
     for index, row in df.iterrows():  # Iterate over DataFrame rows
-        # Split the 'PDF URL' column into two separate columns for hyperlink function
-        # row["PDF URL"] = row["PDF URL"].split(", ")[1].strip(')')
         row_list = row.to_list()  # Convert DataFrame row to a list
         ws2.append(row_list)  # Append the row to the worksheet
 
@@ -82,6 +80,10 @@ def extract_text_from_pdf(pdf_url):
     except Exception as e:
         print(f"Error extracting text from PDF: {e}")
         return None
+
+# Function to create clickable links in Excel
+def create_hyperlink(url, display_text):
+    return f'=HYPERLINK("{url}", "{display_text}")'
 
 # Function to fetch PDFs
 def fetch_pdfs(year, title_filter):
@@ -132,7 +134,8 @@ def fetch_pdfs(year, title_filter):
     
     if st.button("Continue"):
         for url, checked in checkbox_values.items():
-            selected_pdf.append(url_data[url])
+            if checked == True:
+                selected_pdf.append(url_data[url])
 
         table_data = []
 
@@ -155,7 +158,7 @@ def fetch_pdfs(year, title_filter):
 
             for match in matches:
                 row_dict = dict(zip(headers, match))
-                row_dict['PDF URL'] = pdf_url
+                row_dict['PDF URL'] = create_hyperlink(pdf_url, pdf_url)
                 structured_data.append(row_dict)
 
             table_data.extend(structured_data)
