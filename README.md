@@ -16,3 +16,6 @@ streamlit run WRPC_REGIONAL_ENERGY_ACCOUNTS.py
 ```
 streamlit run WRPC_DSM_UI_Accounts.py
 ```
+
+
+⚠️ **Warning:** Opening the Excel file during code execution can result in critical errors. Please refrain from doing so.
