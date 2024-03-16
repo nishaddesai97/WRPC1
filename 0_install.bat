@@ -34,8 +34,6 @@ if exist requirements.txt (
 REM Create directory
 mkdir "static"
 
-start cmd /k cd /d "%~dp0"
-
 echo All actions completed.
 REM Close the command prompt window after 3 seconds
 ping 127.0.0.1 -n 3 > nul
