@@ -6,4 +6,7 @@
 
 4. **Execute the Desired File**: After installation, you can run the appropriate file from the repository using the following commands:
 
-For Windows: 
+* streamlit run
+* streamlit run
+* streamlit run
+* streamlit run 
