@@ -136,9 +136,9 @@ def extract_data(year, title_filter):
         
         # Search for the text in the multiple PDFs and append the results into one DataFrame
         df = search_text_in_multiple_pdfs(pdf_links, "Arinsun_RUMS", year)  # You can adjust the search text as needed
-        st.write(df)
-
+        
         sheet_name = 'WRPC_Monthly Scheduled Revenue'
         hyper_link = create_hyperlink(pdf_url, pdf_title)
         create_file(df, sheet_name, hyper_link)
         st.write("Extracted WRPC_Monthly Scheduled Revenue ")
+        st.write(df)
