@@ -1,6 +1,5 @@
 from openpyxl import Workbook, load_workbook
 from datetime import datetime
-import streamlit as st
 import pandas as pd
 import requests
 import pdfplumber  # For PDF processing
@@ -68,7 +67,6 @@ def search_text_in_pdf(title, url, search_text):
                     break
             if found_row:
                 break  # Exit loop if the first occurrence is found
-
     pdf.close()
     return found_row
 
@@ -141,26 +139,5 @@ def extract_data(year, title_filter):
         hyper_link = create_hyperlink(pdf_url, pdf_title)
         create_file(df, sheet_name, hyper_link)
 
-def download_file(filename):
-    with open(filename, "rb") as f:
-        file_content = f.read()
-    st.download_button(label="Download File", data=file_content, file_name=filename)
-
-if __name__ == '__main__':
-    # REGIONAL ENERGY ACCOUNTS
-    st.markdown('### REGIONAL ENERGY ACCOUNTS')
-
-    # Define the years and title filters for dropdown options
-    years = ['2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010']
-
-    # Create dropdown widgets for selecting the year and title filter
-    selected_year = st.selectbox('Select a Year:', years)
-    current_month = datetime.now().strftime('%B')
-    selected_month = st.text_input('Enter a Month:', current_month)
-
-    # Create a button widget for triggering data extraction
-    if st.button('Extract Data'):
-        extract_data(selected_year, selected_month)
-        st.write(f"Data extracted for: {selected_month}, {selected_year}")
-        print("Exit(0)")
-        download_file(filename)
+def main_call(selected_year,selected_month):
+    extract_data(selected_year, selected_month)
