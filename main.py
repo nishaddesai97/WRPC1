@@ -44,10 +44,9 @@ if __name__ == '__main__':
         # "SRPC Option 2": process_option_4
     }
 
-    if st.button('Extract Data'):
-        for label, value in zip(checkbox_labels, checkbox_values):
-            if value:
-                function_mapping[label](selected_year, selected_month)  # Call the corresponding function based on the selected option
-        
-        data_extracted = any(checkbox_values)       # Set the flag to True if any data extraction occurs
-        download_file()         # Call download_file function after all data extraction functions have completed
+    for label, value in zip(checkbox_labels, checkbox_values):
+        if value:
+            function_mapping[label](selected_year, selected_month)  # Call the corresponding function based on the selected option
+    
+    data_extracted = any(checkbox_values)       # Set the flag to True if any data extraction occurs
+    download_file()         # Call download_file function after all data extraction functions have completed
