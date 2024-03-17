@@ -7,10 +7,8 @@ import pdfplumber  # For PDF processing
 import os
 import io
 
+filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
 def create_file(df, sheet_name, pdf_title):
-
-    filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
-
     # Check file existence
     if not os.path.exists(filename):
         wb = Workbook()
@@ -143,6 +141,11 @@ def extract_data(year, title_filter):
         hyper_link = create_hyperlink(pdf_url, pdf_title)
         create_file(df, sheet_name, hyper_link)
 
+def download_file(filename):
+    with open(filename, "rb") as f:
+        file_content = f.read()
+    st.download_button(label="Download File", data=file_content, file_name=filename)
+
 if __name__ == '__main__':
     # REGIONAL ENERGY ACCOUNTS
     st.markdown('### REGIONAL ENERGY ACCOUNTS')
@@ -160,3 +163,4 @@ if __name__ == '__main__':
         extract_data(selected_year, selected_month)
         st.write(f"Data extracted for: {selected_month}, {selected_year}")
         print("Exit(0)")
+        download_file(filename)
