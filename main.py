@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # Define a dictionary mapping each label to its corresponding function
     function_mapping = {
         "WRPC Regional Accounts": WRPC_REGIONAL_ENERGY_ACCOUNTS.extract_data(selected_year, selected_month),
-        "WRPC DSM UI Accounts": WRPC_DSM_UI_Accounts.main_call(selected_year, selected_month),
+        "WRPC DSM UI Accounts": WRPC_DSM_UI_Accounts.fetch_pdfs(selected_year, selected_month),
         # "SRPC Option 1": process_option_3,
         # "SRPC Option 2": process_option_4
     }
