@@ -3,12 +3,16 @@ import streamlit as st
 
 import WRPC_DSM_UI_Accounts
 import WRPC_REGIONAL_ENERGY_ACCOUNTS
+data_extracted = False
 
 def download_file():
-    filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
-    with open(filename, "rb") as f:
-        file_content = f.read()
-    st.download_button(label="Download File", data=file_content, file_name=filename)
+    if data_extracted:
+        filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
+        with open(filename, "rb") as f:
+            file_content = f.read()
+        st.download_button(label="Download File", data=file_content, file_name=filename)
+    else:
+        st.warning("No data has been extracted yet.")
 
 if __name__ == '__main__':
     st.markdown('### WRPC SRPC EXTRACT DATA')
@@ -24,18 +28,18 @@ if __name__ == '__main__':
     # Create multiple checkboxes
     checkbox_values = [st.checkbox(label) for label in checkbox_labels]
 
-    # Define a dictionary mapping each label to a tuple containing its corresponding function and its arguments
+    # Define a dictionary mapping each label to its corresponding function
     function_mapping = {
-        "WRPC Regional Accounts": (WRPC_REGIONAL_ENERGY_ACCOUNTS.extract_data, selected_year, selected_month),
-        "WRPC DSM UI Accounts": (WRPC_DSM_UI_Accounts.fetch_pdfs, selected_year, selected_month),
-        # "SRPC Option 1": (process_option_3, arg1, arg2),
-        # "SRPC Option 2": (process_option_4, arg1, arg2)
+        "WRPC Regional Accounts": WRPC_REGIONAL_ENERGY_ACCOUNTS.extract_data,
+        "WRPC DSM UI Accounts": WRPC_DSM_UI_Accounts.fetch_pdfs,
+        # "SRPC Option 1": process_option_3,
+        # "SRPC Option 2": process_option_4
     }
 
     if st.button('Extract Data'):
         for label, value in zip(checkbox_labels, checkbox_values):
             if value:
-                func, *args = function_mapping[label]
-                func(*args)  # Call the corresponding function with its arguments based on the selected option
+                function_mapping[label](selected_year, selected_month)  # Call the corresponding function based on the selected option
         
-        # download_file()
+        data_extracted = any(checkbox_values)       # Set the flag to True if any data extraction occurs
+        download_file()         # Call download_file function after all data extraction functions have completed
