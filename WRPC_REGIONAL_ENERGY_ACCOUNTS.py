@@ -138,6 +138,3 @@ def extract_data(year, title_filter):
         sheet_name = 'WRPC_Monthly Scheduled Revenue'
         hyper_link = create_hyperlink(pdf_url, pdf_title)
         create_file(df, sheet_name, hyper_link)
-
-def main_call(selected_year,selected_month):
-    extract_data(selected_year, selected_month)
