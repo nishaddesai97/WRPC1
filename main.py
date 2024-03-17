@@ -9,8 +9,10 @@ if __name__ == '__main__':
     # Create dropdown widgets for selecting the year and title filter
     selected_year = st.selectbox('Select a Year:', years)
     current_month = datetime.now().strftime('%B')
-    selected_month = st.text_input('Enter a Month:', current_month)
-    
+    months = ["January", "February", "March", "April","May", "June", "July", "August","September", "October", "November", "December"] 
+    selected_month = st.selectbox("Select a month", options=months, index=0, format_func=lambda x: x.title())
+
+
     checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC Option 1", "SRPC Option 2"]
     
     # Create multiple checkboxes
