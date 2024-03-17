@@ -1,1 +1,0 @@
-streamlit run WRPC_REGIONAL_ENERGY_ACCOUNTS.py
