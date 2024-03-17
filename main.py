@@ -4,7 +4,6 @@ import streamlit as st
 import WRPC_DSM_UI_Accounts
 import WRPC_REGIONAL_ENERGY_ACCOUNTS
 
-
 def download_file():
     filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
     with open(filename, "rb") as f:
@@ -27,8 +26,8 @@ if __name__ == '__main__':
 
     # Define a dictionary mapping each label to its corresponding function
     function_mapping = {
-        "WRPC Regional Accounts": WRPC_REGIONAL_ENERGY_ACCOUNTS.extract_data(selected_year, selected_month),
-        "WRPC DSM UI Accounts": WRPC_DSM_UI_Accounts.fetch_pdfs(selected_year, selected_month),
+        "WRPC Regional Accounts": WRPC_REGIONAL_ENERGY_ACCOUNTS.extract_data,
+        "WRPC DSM UI Accounts": WRPC_DSM_UI_Accounts.fetch_pdfs,
         # "SRPC Option 1": process_option_3,
         # "SRPC Option 2": process_option_4
     }
@@ -36,7 +35,6 @@ if __name__ == '__main__':
     if st.button('Extract Data'):
         for label, value in zip(checkbox_labels, checkbox_values):
             if value:
-                function_mapping[label]()   # Call the corresponding function based on the selected option
+                function_mapping[label](selected_year, selected_month)  # Call the corresponding function based on the selected option
         
         download_file()
-        
