@@ -24,17 +24,18 @@ if __name__ == '__main__':
     # Create multiple checkboxes
     checkbox_values = [st.checkbox(label) for label in checkbox_labels]
 
-    # Define a dictionary mapping each label to its corresponding function
+    # Define a dictionary mapping each label to a tuple containing its corresponding function and its arguments
     function_mapping = {
-        "WRPC Regional Accounts": WRPC_REGIONAL_ENERGY_ACCOUNTS.extract_data,
-        "WRPC DSM UI Accounts": WRPC_DSM_UI_Accounts.fetch_pdfs,
-        # "SRPC Option 1": process_option_3,
-        # "SRPC Option 2": process_option_4
+        "WRPC Regional Accounts": (WRPC_REGIONAL_ENERGY_ACCOUNTS.extract_data, selected_year, selected_month),
+        "WRPC DSM UI Accounts": (WRPC_DSM_UI_Accounts.fetch_pdfs, selected_year, selected_month),
+        # "SRPC Option 1": (process_option_3, arg1, arg2),
+        # "SRPC Option 2": (process_option_4, arg1, arg2)
     }
 
     if st.button('Extract Data'):
         for label, value in zip(checkbox_labels, checkbox_values):
             if value:
-                function_mapping[label](selected_year, selected_month)  # Call the corresponding function based on the selected option
+                func, *args = function_mapping[label]
+                func(*args)  # Call the corresponding function with its arguments based on the selected option
         
         download_file()
