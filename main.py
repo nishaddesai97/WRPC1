@@ -1,13 +1,21 @@
 from datetime import datetime
 import streamlit as st
+import os
 
 import WRPC_DSM_UI_Accounts
 import WRPC_REGIONAL_ENERGY_ACCOUNTS
 data_extracted = False
 
+filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
+def delete_file():
+    if os.path.exists(filename):
+        os.remove(filename)
+        st.success(f"File '{filename}' has been deleted successfully.")
+    else:
+        st.warning(f"File '{filename}' does not exist.")
+        
 def download_file():
     if data_extracted:
-        filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
         with open(filename, "rb") as f:
             file_content = f.read()
         st.download_button(label="Download File", data=file_content, file_name=filename)
