@@ -2,13 +2,10 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font, Color
 from openpyxl.styles.colors import BLUE
 from datetime import datetime
-import streamlit as st
 import pandas as pd
 import requests
-import fitz  # For PDF processing
 import os
 import re
-import streamlit as st
 import io  # Import io module
 import pdfplumber  # Alternative library for PDF processing
 
@@ -169,14 +166,7 @@ def fetch_pdfs(year, title_filter):
         sheet_name = 'WRPC_DSM'
         create_file(df, sheet_name)
 
-if __name__ == '__main__':
-    st.markdown('### WRPC DSM UI ACCOUNTS')
-    years = ['2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010']
-    selected_year = st.selectbox('Select a Year:', years)  
-
-    months = ["January", "February", "March", "April","May", "June", "July", "August","September", "October", "November", "December"] 
-    selected_month = st.selectbox("Select a month", options=months, index=0, format_func=lambda x: x.title())
+def main_call(selected_year, selected_month):
+    st.markdown('### Fetching data for WRPC DSM UI ACCOUNTS')
     st.write("Please select at least one pdf before continue")
     fetch_pdfs(selected_year, selected_month)
- 
-    print("Done")
