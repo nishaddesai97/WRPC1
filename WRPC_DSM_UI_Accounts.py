@@ -85,6 +85,7 @@ def create_hyperlink(url, display_text):
 
 # Function to fetch PDFs
 def fetch_pdfs(year, title_filter):
+    st.write("Extracting data for WRPC DSM UI Accounts")
     wrpc_base_url = "https://www.wrpc.gov.in"
     search_text = "Arinsun_RUMS"
     UI_link = wrpc_base_url + "/assets/data/UI_" + year + '.txt'
@@ -162,7 +163,8 @@ def fetch_pdfs(year, title_filter):
             table_data.extend(structured_data)
 
         df = pd.DataFrame(table_data)
-        # st.write(df)
 
         sheet_name = 'WRPC_DSM'
         create_file(df, sheet_name)
+        st.write("Data extracted for WRPC DSM UI Accounts")
+        st.write(df)
