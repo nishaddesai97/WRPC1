@@ -31,8 +31,12 @@ if __name__ == '__main__':
     current_month = datetime.now().strftime('%B')
     months = ["January", "February", "March", "April","May", "June", "July", "August","September", "October", "November", "December"] 
     selected_month = st.selectbox("Select a month", options=months, index=0, format_func=lambda x: x.title())
-    checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC Option 1", "SRPC Option 2"]
     
+    
+    if st.button("Delete File"):
+        delete_file()
+
+    checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC Option 1", "SRPC Option 2"]
     # Create multiple checkboxes
     checkbox_values = [st.checkbox(label) for label in checkbox_labels]
 
