@@ -112,6 +112,7 @@ def search_text_in_multiple_pdfs(pdf_links, search_text, year):
 
 # Define a function to extract data based on selected year and title filter
 def extract_data(year, title_filter):
+    st.write("WRPC_Monthly Scheduled Revenue ")
     wrpc_base_url = "https://www.wrpc.gov.in"
     REA_link = f"{wrpc_base_url}/assets/data/REA_{year}.txt"
     response = requests.get(REA_link)
@@ -136,6 +137,7 @@ def extract_data(year, title_filter):
         # Search for the text in the multiple PDFs and append the results into one DataFrame
         df = search_text_in_multiple_pdfs(pdf_links, "Arinsun_RUMS", year)  # You can adjust the search text as needed
         st.write(df)
+
         sheet_name = 'WRPC_Monthly Scheduled Revenue'
         hyper_link = create_hyperlink(pdf_url, pdf_title)
         create_file(df, sheet_name, hyper_link)
