@@ -7,12 +7,12 @@ import WRPC_REGIONAL_ENERGY_ACCOUNTS
 data_extracted = False
 
 filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
-# def delete_file():
-#     if os.path.exists(filename):
-#         os.remove(filename)
-#         st.success(f"File '{filename}' has been deleted successfully.")
-#     else:
-#         st.warning(f"File '{filename}' does not exist.")
+def delete_file():
+    if os.path.exists(filename):
+        os.remove(filename)
+        st.success(f"File '{filename}' has been deleted successfully.")
+    else:
+        st.warning(f"File '{filename}' does not exist.")
         
 def download_file():
     if data_extracted:
@@ -33,8 +33,8 @@ if __name__ == '__main__':
     selected_month = st.selectbox("Select a month", options=months, index=0, format_func=lambda x: x.title())
     
     
-    # if st.button("Delete File"):
-    #     delete_file()
+    if st.button("Delete File"):
+        delete_file()
 
     checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC SRPC_REA_REA", "SRPC_WA_DSM"]
     # Create multiple checkboxes
