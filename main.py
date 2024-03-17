@@ -38,4 +38,4 @@ if __name__ == '__main__':
                 func, *args = function_mapping[label]
                 func(*args)  # Call the corresponding function with its arguments based on the selected option
         
-        download_file()
+        # download_file()
