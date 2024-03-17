@@ -13,7 +13,7 @@ def delete_file():
         st.success(f"File '{filename}' has been deleted successfully.")
     else:
         st.warning(f"File '{filename}' does not exist.")
-        
+
 def download_file():
     if data_extracted:
         with open(filename, "rb") as f:
@@ -25,6 +25,9 @@ def download_file():
 if __name__ == '__main__':
     st.markdown('### WRPC SRPC EXTRACT DATA')
     
+    if st.button("Delete File"):
+        delete_file()
+
     years = ['2024','2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010']
     # Create dropdown widgets for selecting the year and title filter
     selected_year = st.selectbox('Select a Year:', years)
@@ -32,9 +35,7 @@ if __name__ == '__main__':
     months = ["January", "February", "March", "April","May", "June", "July", "August","September", "October", "November", "December"] 
     selected_month = st.selectbox("Select a month", options=months, index=0, format_func=lambda x: x.title())
     
-    
-    if st.button("Delete File"):
-        delete_file()
+
 
     checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC SRPC_REA_REA", "SRPC_WA_DSM"]
     # Create multiple checkboxes
