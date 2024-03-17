@@ -37,5 +37,4 @@ if __name__ == '__main__':
             if value:
                 function_mapping[label](selected_year, selected_month)  # Call the corresponding function based on the selected option
         
-        if st.button('Download Data'):
-            download_file()
+        download_file()
