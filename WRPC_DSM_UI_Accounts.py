@@ -5,10 +5,11 @@ from datetime import datetime
 import pandas as pd
 import requests
 import os
+import streamlit as st
 import re
 import io  # Import io module
 import pdfplumber  # Alternative library for PDF processing
-
+ 
 selected_pdf = []
 search_text = "Arinsun_RUMS"
 
@@ -161,12 +162,7 @@ def fetch_pdfs(year, title_filter):
             table_data.extend(structured_data)
 
         df = pd.DataFrame(table_data)
-        st.write(df)
+        # st.write(df)
 
         sheet_name = 'WRPC_DSM'
         create_file(df, sheet_name)
-
-def main_call(selected_year, selected_month):
-    st.markdown('### Fetching data for WRPC DSM UI ACCOUNTS')
-    st.write("Please select at least one pdf before continue")
-    fetch_pdfs(selected_year, selected_month)
