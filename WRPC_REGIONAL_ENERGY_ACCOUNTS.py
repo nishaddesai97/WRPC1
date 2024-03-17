@@ -5,6 +5,7 @@ import requests
 import pdfplumber  # For PDF processing
 import os
 import io
+import streamlit as st
 
 filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
 def create_file(df, sheet_name, pdf_title):
