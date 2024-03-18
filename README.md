@@ -4,7 +4,7 @@
 
 3. **Run the Installation Script**: Locate and double-click the "install.bat" file within the unzipped directory. This script automates the installation process, ensuring that Python and other necessary components are installed seamlessly.
 
-  If the script above fails to work, Python can be downloaded from [here](https://www.python.org/ftp/python/3.10.2/python-3.10.2-amd64.exe).
+      If the script above fails to work, Python can be downloaded from [here](https://www.python.org/ftp/python/3.10.2/python-3.10.2-amd64.exe).
 
 4. **Execute the Desired File**: Double-click on the file to run the desired program. 
 
