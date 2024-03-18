@@ -161,6 +161,7 @@ def fetch_pdfs(year, title_filter):
                 row_dict['PDF URL'] = create_hyperlink(pdf_url, pdf_url)
                 structured_data.append(row_dict)
 
+            table_data.append({})
             table_data.extend(structured_data)
 
         df = pd.DataFrame(table_data)
@@ -169,3 +170,4 @@ def fetch_pdfs(year, title_filter):
         create_file(df, sheet_name)
         st.write("Data extracted for WRPC DSM UI Accounts")
         st.write(df)
+
