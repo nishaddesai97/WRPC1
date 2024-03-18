@@ -56,10 +56,7 @@ def search_text_in_pdf(title, url, search_text):
         page = pdf_document.pages[page_num]
         
         text = page.extract_text()
-        with open("abc.txt", "a", encoding="utf-8") as file:
-            # Write the text to the file
-            file.write(text)
-
+  
         # Check if the search text exists in the current page
         if search_text in text:
             # Split the text into lines
