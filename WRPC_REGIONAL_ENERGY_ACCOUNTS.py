@@ -120,7 +120,7 @@ def search_text_in_multiple_pdfs(pdf_links, search_text, year):
 
 # Define a function to extract data based on selected year and title filter
 def extract_data(year, title_filter):
-    print("Extracting WRPC_Monthly Scheduled Revenue ")
+    st.write("Extracting WRPC_Monthly Scheduled Revenue ")
     wrpc_base_url = "https://www.wrpc.gov.in"
     REA_link = f"{wrpc_base_url}/assets/data/REA_{year}.txt"
     response = requests.get(REA_link)
@@ -151,7 +151,7 @@ def extract_data(year, title_filter):
         sheet_name = 'WRPC_Monthly Scheduled Revenue'
         hyper_link = create_hyperlink(pdf_url, pdf_title)
         create_file(df, sheet_name, hyper_link)
-        print("Extracted WRPC_Monthly Scheduled Revenue ")
+        st.write("Extracted WRPC_Monthly Scheduled Revenue ")
         print(df)
     else:
         print("NO DATA FOUND FOR THE SPECIFIED DATE/ WRPC_Monthly Scheduled Revenue")
