@@ -15,7 +15,7 @@ def delete_file():
         st.warning(f"File '{filename}' does not exist.")
 
 def download_file():
-    if data_extracted:
+    if os.path.exists(filename):
         with open(filename, "rb") as f:
             file_content = f.read()
         st.download_button(label="Download File", data=file_content, file_name=filename)
@@ -23,7 +23,7 @@ def download_file():
         st.warning("No data has been extracted yet.")
 
 if __name__ == '__main__':
-    st.markdown('### WRPC SRPC EXTRACT DATA -')
+    st.markdown('### WRPC SRPC EXTRACT DATA')
     
     if st.button("Delete File"):
         delete_file()
@@ -34,10 +34,8 @@ if __name__ == '__main__':
     current_month = datetime.now().strftime('%B')
     months = ["January", "February", "March", "April","May", "June", "July", "August","September", "October", "November", "December"] 
     selected_month = st.selectbox("Select a month", options=months, index=0, format_func=lambda x: x.title())
-
-    checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts"]
-    # checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC SRPC_REA_REA", "SRPC_WA_DSM"]
     
+    checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC SRPC_REA_REA", "SRPC_WA_DSM"]
     # Create multiple checkboxes
     checkbox_values = [st.checkbox(label) for label in checkbox_labels]
 
