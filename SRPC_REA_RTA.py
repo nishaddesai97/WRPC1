@@ -1,16 +1,14 @@
+from openpyxl import Workbook, load_workbook
+import os
 import requests
 import re
 import pandas as pd
 import fitz  # PyMuPDF library for PDF parsing
 from datetime import datetime
 import urllib3
-import openpyxl
 from openpyxl.styles import Font
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-
-
 
 def fetch_pdf_urls(month, year, doc_type):
   base_url = "https://www.srpc.kar.nic.in/website/2023/commercial/"
@@ -92,8 +90,6 @@ def extract_data(text, num_columns):
 
 
 if __name__ == "__main__":
-
-
   doc_type = "REA"
   month = "jan"
   year = "2024"
@@ -147,44 +143,45 @@ if __name__ == "__main__":
   # non_solar_df.to_csv("non_solar_data.csv", index=False)
 
   print("Actual Meter Reading Available Upto :", date_)
+  filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
+  sheet_name = "SRPC_REA"
 
+  # Check file existence
+  if not os.path.exists(filename):
+      wb = Workbook()
+      wb.save(filename)
+  else:
+      wb = load_workbook(filename)
 
-file_name = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
-sheet_name = "SRPC_REA"
+  # Check if sheet exists
+  if sheet_name not in wb.sheetnames:
+      wb.create_sheet(title=sheet_name)
+  ws2 = wb[sheet_name]
 
-# Create a new workbook
-workbook = openpyxl.Workbook()
+  ws2.cell(row=1, column=1, value="Actual Meter Reading Available Upto :")
+  ws2.cell(row=1, column=2, value=date_)
 
-worksheet = workbook.create_sheet(title=sheet_name)
+  # Write headers for solar_df
+  solar_headers = solar_df.columns
+  for col_num, header in enumerate(solar_headers, start=1):
+      cell = ws2.cell(row=2, column=col_num, value=header)
+      cell.font = Font(bold=True)
 
-# Select the active worksheet
-# worksheet = workbook.active
-# Write data to the worksheet
-worksheet.cell(row=1, column=1, value="Actual Meter Reading Available Upto :")
-worksheet.cell(row=1, column=2, value=date_)
+  # Write solar_df data
+  for row_num, (_, row_data) in enumerate(solar_df.iterrows(), start=3):
+      for col_num, value in enumerate(row_data, start=1):
+          ws2.cell(row=row_num, column=col_num, value=value)
 
-# Write headers for solar_df
-solar_headers = solar_df.columns
-for col_num, header in enumerate(solar_headers, start=1):
-    cell = worksheet.cell(row=2, column=col_num, value=header)
-    cell.font = Font(bold=True)
+  # Write headers for non_solar_df
+  non_solar_headers = non_solar_df.columns
+  for col_num, header in enumerate(non_solar_headers, start=1):
+      cell = ws2.cell(row=len(solar_df) + 4, column=col_num, value=header)
+      cell.font = Font(bold=True)
 
-# Write solar_df data
-for row_num, (_, row_data) in enumerate(solar_df.iterrows(), start=3):
-    for col_num, value in enumerate(row_data, start=1):
-        worksheet.cell(row=row_num, column=col_num, value=value)
+  # Write non_solar_df data
+  for row_num, (_, row_data) in enumerate(non_solar_df.iterrows(), start=len(solar_df) + 5):
+      for col_num, value in enumerate(row_data, start=1):
+          ws2.cell(row=row_num, column=col_num, value=value)
 
-# Write headers for non_solar_df
-non_solar_headers = non_solar_df.columns
-for col_num, header in enumerate(non_solar_headers, start=1):
-    cell = worksheet.cell(row=len(solar_df) + 4, column=col_num, value=header)
-    cell.font = Font(bold=True)
-
-# Write non_solar_df data
-for row_num, (_, row_data) in enumerate(non_solar_df.iterrows(), start=len(solar_df) + 5):
-    for col_num, value in enumerate(row_data, start=1):
-        worksheet.cell(row=row_num, column=col_num, value=value)
-
-# Save the workbook
-workbook.save(file_name)
-workbook.close()
+  # Save the workbook
+  wb.save(filename)
