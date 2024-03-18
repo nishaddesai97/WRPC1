@@ -36,8 +36,8 @@ if __name__ == '__main__':
     selected_month = st.selectbox("Select a month", options=months, index=0, format_func=lambda x: x.title())
     
 
-
-    checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC SRPC_REA_REA", "SRPC_WA_DSM"]
+    # checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC SRPC_REA_REA", "SRPC_WA_DSM"]
+    checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts"]
     # Create multiple checkboxes
     checkbox_values = [st.checkbox(label) for label in checkbox_labels]
 
