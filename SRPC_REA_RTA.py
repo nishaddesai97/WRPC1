@@ -1,12 +1,13 @@
 from openpyxl import Workbook, load_workbook
-import os
-import requests
-import re
-import pandas as pd
-import fitz  # PyMuPDF library for PDF parsing
-from datetime import datetime
-import urllib3
 from openpyxl.styles import Font
+from datetime import datetime
+import streamlit as st
+import pandas as pd
+import requests
+import urllib3
+import os
+import re
+import fitz  # PyMuPDF library for PDF parsing
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -25,14 +26,12 @@ def fetch_pdf_urls(month, year, doc_type):
         month_locations[url] = ml
   return pdf_urls, month_locations
 
-
 def extract_text_from_pdf(pdf_content):
   with fitz.open("pdf", pdf_content) as doc:
     text = ""
     for page in doc:
       text += page.get_text()
   return text
-
 
 def find_table(text):
   table_pattern_4col = r'Entity\s+Total\s+Energy\s+Schedule\s+Total\s+Actual\s+data\s+Net\s+Deviation\s+for\s+the\s+purpose\s+of\s+REC'
@@ -43,8 +42,7 @@ def find_table(text):
     return 2
   return 0
 
-
-def extract_data(text, num_columns):
+def extract_data(text, num_columns, search_terms):
   data = []
   date_pattern = r'Actual Meter Reading Available Upto : (\d{4}-\d{2}-\d{2})'
   date_match = re.search(date_pattern, text)
@@ -89,12 +87,12 @@ def extract_data(text, num_columns):
   return d, date_str
 
 
-if __name__ == "__main__":
+def fetch_data(year, month):
+  st.write("Extracting SRPC_REA")
   doc_type = "REA"
-  month = "jan"
-  year = "2024"
-  search_terms = ["SPRNG,NPKUNTA", "Fortum Solar,PAVAGADA",
-                  "SPRNG,PUGULUR"]  # entity names
+  # month = "jan"
+  # year = "2024"
+  search_terms = ["SPRNG,NPKUNTA", "Fortum Solar,PAVAGADA","SPRNG,PUGULUR"]  # entity names
   solar_entities = {"SPRNG,NPKUNTA", "Fortum Solar,PAVAGADA"}
   non_solar_entities = {"SPRNG,PUGULUR"}
 
@@ -102,7 +100,6 @@ if __name__ == "__main__":
 
   # Fetch PDF URLs
   pdf_urls, month_locations = fetch_pdf_urls(month, year, doc_type)
-
   solar_data, non_solar_data = [], []
 
   for pdf_url, month_location in zip(pdf_urls, month_locations.values()):
@@ -110,7 +107,7 @@ if __name__ == "__main__":
       text = extract_text_from_pdf(response.content)
       num_columns = find_table(text)
       if num_columns:
-        data, date_str = extract_data(text, num_columns)
+        data, date_str = extract_data(text, num_columns, search_terms)
         date_ = date_str
         if data is not None:
           for row in data.values:
@@ -120,9 +117,7 @@ if __name__ == "__main__":
             elif entity in non_solar_entities:
               non_solar_data.append((*row, month_location, pdf_url))
             else:
-              print(
-                  f"Entity '{entity}' not found in solar_entities or non_solar_entities sets."
-              )
+              print(f"Entity '{entity}' not found in solar_entities or non_solar_entities sets.")
 
   # Define column names
   solar_columns = [
@@ -182,6 +177,8 @@ if __name__ == "__main__":
   for row_num, (_, row_data) in enumerate(non_solar_df.iterrows(), start=len(solar_df) + 5):
       for col_num, value in enumerate(row_data, start=1):
           ws2.cell(row=row_num, column=col_num, value=value)
-
   # Save the workbook
   wb.save(filename)
+  st.write("Extracted data for SRPC_REA")
+
+fetch_data("2024", "jan")
