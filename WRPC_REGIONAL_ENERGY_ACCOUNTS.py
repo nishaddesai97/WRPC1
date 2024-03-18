@@ -8,7 +8,7 @@ import io
 import streamlit as st
 
 filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
-def create_file(df, sheet_name, pdf_title):
+def create_file(df, sheet_name):
     # Check file existence
     if not os.path.exists(filename):
         wb = Workbook()
@@ -23,6 +23,7 @@ def create_file(df, sheet_name, pdf_title):
     # Check if sheet exists
     if sheet_name not in wb.sheetnames:
         wb.create_sheet(title=sheet_name)
+
     ws2 = wb[sheet_name]
 
     # Write specific column names as headers
@@ -32,10 +33,9 @@ def create_file(df, sheet_name, pdf_title):
     # Append data to the worksheet
     for index, row in df.iterrows():  # Iterate over DataFrame rows
         # Split the 'PDF URL' column into two separate columns for hyperlink function
-        row["PDF URL"] = pdf_title
+        # row["PDF URL"] = pdf_title
         row_list = row.to_list()  # Convert DataFrame row to a list
-        ws2.append(row_list)  # Append the row to the worksheet
-
+        ws2.append(row_list)      # Append the row to the worksheet
     # Save the workbook
     wb.save(filename)
 
@@ -102,31 +102,31 @@ def row_to_dataframe(row, title, url, year):
     # Add year and PDF URL to DataFrame
     df["Year"] = year
     df["PDF URL"] = create_hyperlink(url, title)
-
     return df
 
 # Function to perform search on multiple PDF URLs and append results into one DataFrame
 def search_text_in_multiple_pdfs(pdf_links, search_text, year):
-    # print("pdf links", pdf_links)
-    # print("search text =", search_text)
     all_rows = []
     for title, url in pdf_links:
+        # print("TITLE:",title,"\t URL:",url)
         found_row = search_text_in_pdf(title, url, search_text)
         if found_row:
             all_rows.append((found_row, title, url))
 
     df = pd.concat([row_to_dataframe(row, title, url, year) for row, title, url in all_rows], ignore_index=True)
+    st.write(df)
     return df
 
 # Define a function to extract data based on selected year and title filter
 def extract_data(year, title_filter):
-    st.write("Extracting WRPC_Monthly Scheduled Revenue ")
+    print("Extracting WRPC_Monthly Scheduled Revenue ")
     wrpc_base_url = "https://www.wrpc.gov.in"
     REA_link = f"{wrpc_base_url}/assets/data/REA_{year}.txt"
     response = requests.get(REA_link)
     # print("rea_link", REA_link)
     pdf_title = ""
     pdf_url = ""
+
     # print(response.status_code)
     if response.status_code == 200:
         rea_data = response.text.split("\n")
@@ -134,6 +134,7 @@ def extract_data(year, title_filter):
         for data_line in rea_data:
             if ".pdf" in data_line:
                 data_parts = data_line.split(",")
+                # print("data_parts",data_parts)
                 if len(data_parts) >= 3:
                     month_year = data_parts[0].strip()
                     title = data_parts[0].strip() + ", " + data_parts[1].strip()
@@ -145,14 +146,14 @@ def extract_data(year, title_filter):
                         pdf_links.append((title, link))
         
         # print("pdf_links>>>>", pdf_links)
+                        
         # Search for the text in the multiple PDFs and append the results into one DataFrame
         df = search_text_in_multiple_pdfs(pdf_links, "Arinsun_RUMS", year)  # You can adjust the search text as needed
         
         sheet_name = 'WRPC_Monthly Scheduled Revenue'
-        hyper_link = create_hyperlink(pdf_url, pdf_title)
-        create_file(df, sheet_name, hyper_link)
-        st.write("Extracted WRPC_Monthly Scheduled Revenue ")
-        print(df)
+        create_file(df, sheet_name)
+        st.write("Extracted WRPC_Monthly Scheduled Revenue")
+        # print(df)
     else:
         print("NO DATA FOUND FOR THE SPECIFIED DATE/ WRPC_Monthly Scheduled Revenue")
         st.warning("There's no data available for WRPC_Monthly Scheduled Revenue in the specified time frame.")
