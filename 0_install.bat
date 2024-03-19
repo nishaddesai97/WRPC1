@@ -23,10 +23,14 @@ if %errorlevel% neq 0 (
 REM Verify Python and pip installation
 python --version
 pip --version
+python -m ensurepip --default-pip
+
+REM Ensure pip, setuptools, and wheel are up to date
+python -m pip install --upgrade pip setuptools wheel
 
 REM Install dependencies from requirements.txt
 if exist requirements.txt (
-    python -m pip install -r requirements.txt
+    pip install -r requirements.txt
 ) else (
     echo requirements.txt not found. Skipping dependency installation.
 )
@@ -35,6 +39,7 @@ REM Create directory
 mkdir "static"
 
 echo All actions completed.
+
 REM Close the command prompt window after 3 seconds
 ping 127.0.0.1 -n 3 > nul
 exit
