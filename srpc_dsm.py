@@ -53,25 +53,6 @@ def extract_rows_with_keywords(pdf_content, search_terms, url):
     print("------Rows fetched")
     return filtered_rows
 
-# def extract_rows_with_keywords(pdf_content, search_terms, url):
-#     print("Fetching rows that contain search terms in ", url)
-#     rows = re.split(r'\n', pdf_content)  # Split the PDF content into rows
-#     filtered_rows = []
-#     for i, row in enumerate(rows):
-#         row_lower = row.lower()
-#         for term in search_terms:
-#             term_parts = term.lower().split(', ')
-#             if all(part in row_lower for part in term_parts):
-#                 # If all parts of the search term are found in the current row,
-#                 # check if the next row contains the second part of the term
-#                 if i + 1 < len(rows) and term_parts[1] in rows[i + 1].lower():
-#                     combined_row = row.strip() + " " + rows[i + 1].strip()
-#                     filtered_rows.append(combined_row)
-#                     break  # Move to the next row
-#     print("------Rows fetched")
-#     return filtered_rows
-
-
 def fetch_data(selected_year, selected_month):
     st.warning("Please select the week for which you'd like to fetch data, then click 'Continue' below.")
     # Fetching data from the provided URL
