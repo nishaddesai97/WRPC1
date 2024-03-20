@@ -5,6 +5,7 @@ import os
 import WRPC_DSM_UI_Accounts
 import WRPC_REGIONAL_ENERGY_ACCOUNTS
 import SRPC_REA_RTA
+import SRPC_WA_DSM
 
 data_extracted = False
 
@@ -36,17 +37,16 @@ if __name__ == '__main__':
     months = ["January", "February", "March", "April","May", "June", "July", "August","September", "October", "November", "December"] 
     selected_month = st.selectbox("Select a month", options=months, index=0, format_func=lambda x: x.title())
     
-    # checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC SRPC_REA_REA", "SRPC_WA_DSM"]
-   
+
     # Define a dictionary mapping each label to its corresponding function
     function_mapping = {
         "WRPC Regional Accounts": WRPC_REGIONAL_ENERGY_ACCOUNTS.extract_data,
         "WRPC DSM UI Accounts": WRPC_DSM_UI_Accounts.fetch_pdfs,
-        "SRPC_REA_REA": SRPC_REA_RTA.fetch_data,
-        # "SRPC Option 2": SRPC_WA_DSM
+        "SRPC REA_RTA": SRPC_REA_RTA.fetch_data,
+        "SRPC_WA_DSM": SRPC_WA_DSM.fetch_data
     }
-    
-    checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC_REA_REA"]
+
+    checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC REA_RTA", "SRPC_WA_DSM"]
     selected_option = st.radio("Select an option", checkbox_labels)
     # if st.button("Start"):
     function_mapping[selected_option](selected_year, selected_month)
