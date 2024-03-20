@@ -42,8 +42,8 @@ def extract_text_from_pdf(pdf_content):
     with pdfplumber.open(BytesIO(pdf_content)) as pdf:
         for page in pdf.pages:
             text += page.extract_text()
-    with open("test2.txt", "w", encoding="utf-8") as file:
-        file.write(text)
+    # with open("test2.txt", "w", encoding="utf-8") as file:
+    #     file.write(text)
     return text
 
 def extract_rows_with_keywords(pdf_content, url):
