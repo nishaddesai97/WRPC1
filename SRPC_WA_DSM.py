@@ -218,14 +218,3 @@ def fetch_data(selected_year, selected_month):
             print("Extracted SRPC WA DSM✨")
         else:
             st.error("Please select at least one URL before continuing.")
-
-# # Streamlit app
-# st.title('SRPC WA DSM')
-# years = ['2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010']
-# # Create dropdown widgets for selecting the year and title filter
-# selected_year = st.selectbox('Select a Year:', years)
-# months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-# selected_month = st.selectbox("Select a month", options=months, index=2, format_func=lambda x: x.title())
-
-# # Call fetch_data function
-# fetch_data(selected_year, selected_month)
