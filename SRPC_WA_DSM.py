@@ -221,5 +221,3 @@ def fetch_data(selected_year, selected_month):
             print("Extracted SRPC WA DSM✨")
         else:
             st.error("Please select at least one URL before continuing.")
-
-fetch_data("2024" , "february")
