@@ -42,8 +42,8 @@ def extract_text_from_pdf(pdf_content):
     with pdfplumber.open(BytesIO(pdf_content)) as pdf:
         for page in pdf.pages:
             text += page.extract_text()
-    # with open("test2.txt", "w", encoding="utf-8") as file:
-    #     file.write(text)
+    with open("test2.txt", "w", encoding="utf-8") as file:
+        file.write(text)
     return text
 
 def extract_rows_with_keywords(pdf_content, url):
@@ -88,16 +88,14 @@ def extract_rows_with_keywords(pdf_content, url):
     print("------> Rows fetched")
     return filtered_rows, WS_Seller
 
-
 def create_file(DSM_Daywise_St_rows , WS_Seller):
     print("Saving data")
     WS_Seller_cols = ["Entity", "Over Injection Charges (Rs)", "Under Injecton Charges (Rs)",
-        "Charges for Drawl without schedule (Rs)", "Final Charges (Rs)", "Payable To Pool/Receviable From Pool"]
+        "Charges for Drawl without schedule (Rs)", "Final Charges (Rs)", "Payable To Pool/Receviable From Pool" , "PDF Url"]
 
     DSM_Daywise_St_cols = [ "Station details", "DATE", "Total Schedule (MWHr)",
-            "Total Actual (MWHr)", "Total SRAS (MWHr)", "Total Deviation", "Total Overinjection Charges(Rs)", "Total Underinjection Charges (Rs)", "Drawl Charges (Rs)"]
+            "Total Actual (MWHr)", "Total SRAS (MWHr)", "Total Deviation", "Total Overinjection Charges(Rs)", "Total Underinjection Charges (Rs)", "Drawl Charges (Rs)", "PDF Url"]
 
-    # print(DSM_Daywise_St_rows)
     DSM_Daywise_formatted_rows = []
     for row in DSM_Daywise_St_rows:
         # Find the index where the first digit occurs
@@ -107,18 +105,14 @@ def create_file(DSM_Daywise_St_rows , WS_Seller):
             col1 = row[:index].strip()  # Take the substring before the first digit
             rest_of_row = row[index:].split()  # Split the remaining part by space
             formatted_row = [col1] + rest_of_row
+            # formatted_row.append("TEST")
         else:
             formatted_row = [row]  # If no digit is found, consider the entire row as the first column
         DSM_Daywise_formatted_rows.append(formatted_row)
     
-    df_DSM = []
-    for line in DSM_Daywise_formatted_rows:
-        df_DSM.append(line)
-    DSM_Daywise_df = pd.DataFrame(df_DSM, columns=DSM_Daywise_St_cols)
-    print(df_DSM)
-    
+    DSM_Daywise_df = pd.DataFrame(DSM_Daywise_formatted_rows, columns=DSM_Daywise_St_cols)
+    #____________________________________________________________________________________________________
     formatted_row = ""
-    WS_Seller_df =  []
     WS_Seller_formatted_rows = []
     for row in WS_Seller:
         # Find the index where the first digit occurs
@@ -132,9 +126,8 @@ def create_file(DSM_Daywise_St_rows , WS_Seller):
             formatted_row = [row]  # If no digit is found, consider the entire row as the first column
         WS_Seller_formatted_rows.append(formatted_row)
 
-    for line in WS_Seller_formatted_rows:
-        WS_Seller_df.append(line)
-    WS_Seller_df = pd.DataFrame(WS_Seller_df, columns=WS_Seller_cols)
+    WS_Seller_df = pd.DataFrame(WS_Seller_formatted_rows, columns=WS_Seller_cols)
+    #____________________________________________________________________________________________________
 
     filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
     sheet_name = "SRPC_WA_DSM"
@@ -175,6 +168,9 @@ def create_file(DSM_Daywise_St_rows , WS_Seller):
         ws2.append(frow_list)
     wb.save(filename)
 
+def create_hyperlink(url, display_text):
+    return f'=HYPERLINK("{url}","{display_text}")'
+
 def fetch_data(selected_year, selected_month):
     st.warning("Please select the week for which you'd like to fetch data, then click 'Continue' below.")
     # Fetching data from the provided URL
@@ -205,16 +201,25 @@ def fetch_data(selected_year, selected_month):
             # if not urls_found:
             #     st.error("No data were found for the selected period.")
 
+    DSM_Daywise_rows, WS_Seller_rows = [], []
     if st.button('Continue'):
         if selected_urls:
-            # fetch_text(selected_urls)
             for url in selected_urls:
                 with requests.get(url, verify=False) as response:
                     text = extract_text_from_pdf(response.content)
-                    # print(text)
                     rows, WS_Seller = extract_rows_with_keywords(text,url)
-            create_file(rows, WS_Seller)
+                    for r in rows:
+                        r_with_url = r + " "+ create_hyperlink(url,url)
+                        DSM_Daywise_rows.append(r_with_url)
+                        # print(r_with_url)
+                    
+                    for w in WS_Seller:
+                        WS_Seller_rows.append(w + " " + create_hyperlink(url,url))
+
+            create_file(DSM_Daywise_rows, WS_Seller_rows)
             st.success("Extracted SRPC WA DSM✨")
             print("Extracted SRPC WA DSM✨")
         else:
             st.error("Please select at least one URL before continuing.")
+
+fetch_data("2024" , "february")
