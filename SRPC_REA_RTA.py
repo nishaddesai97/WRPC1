@@ -7,7 +7,6 @@ import requests
 import urllib3
 import os
 import re
-import fitz  # PyMuPDF library for PDF parsing
 import pdfplumber
 import io
 
