@@ -26,18 +26,19 @@ filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx
 #         st.warning("No data has been extracted yet.")
 
 if __name__ == '__main__':
-    st.markdown('### WRPC SRPC EXTRACT DATA')
+    st.markdown('### Data Extraction from WRPC and SRPC')
     # if st.button("Delete File"):
     #     delete_file()
 
     years = ['2024','2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010']
     # Create dropdown widgets for selecting the year and title filter
     selected_year = st.selectbox('Select a Year:', years)
+    
     current_month = datetime.now().strftime('%B')
     months = ["January", "February", "March", "April","May", "June", "July", "August","September", "October", "November", "December"] 
-    selected_month = st.selectbox("Select a month", options=months, index=0, format_func=lambda x: x.title())
+    current_month_index = months.index(current_month)
+    selected_month = st.selectbox("Select a month", options=months, index=current_month_index, format_func=lambda x: x.title())
     
-
     # Define a dictionary mapping each label to its corresponding function
     function_mapping = {
         "WRPC Regional Accounts": WRPC_REGIONAL_ENERGY_ACCOUNTS.extract_data,
@@ -45,7 +46,8 @@ if __name__ == '__main__':
         "SRPC REA_RTA": SRPC_REA_RTA.fetch_data,
         "SRPC_WA_DSM": SRPC_WA_DSM.fetch_data
     }
-
+    
+    st.error("Opening the Excel file during code execution can result in critical errors. Please refrain from doing so.")
     checkbox_labels = ["WRPC Regional Accounts", "WRPC DSM UI Accounts", "SRPC REA_RTA", "SRPC_WA_DSM"]
     selected_option = st.radio("Select an option", checkbox_labels)
     # if st.button("Start"):
