@@ -16,7 +16,6 @@ def fetch_pdf_urls(month, year, doc_type):
   base_url = "https://www.srpc.kar.nic.in/website/2023/commercial/"
   pdf_urls = []
   month_locations = {}
-
   month_location = ["p", "f"]
   for ml in month_location:
     url = f"{base_url}{doc_type.lower()}{month[:3].lower()}{year[-2:]}{ml}.pdf"
@@ -27,24 +26,11 @@ def fetch_pdf_urls(month, year, doc_type):
         month_locations[url] = ml
   return pdf_urls, month_locations
 
-# def extract_text_from_pdf(pdf_content):
-#   with fitz.open("pdf", pdf_content) as doc:
-#     text = ""
-#     for page in doc:
-#       text += page.get_text()
-
-#       with open("test1.txt", "w", encoding="utf-8") as file:
-#         file.write(text)
-#   return text
-
 def extract_text_from_pdf(pdf_content):
     text = ""
     with pdfplumber.open(io.BytesIO(pdf_content)) as pdf:
         for page in pdf.pages:
             text += page.extract_text()
-
-    with open("test2.txt", "w", encoding="utf-8") as file:
-        file.write(text)
     return text
 
 def find_table(text, search_terms):
@@ -60,7 +46,6 @@ def find_table(text, search_terms):
             else:
                 # Handle other cases as needed
                 return None
-
 
 def extract_data(text, num_columns, search_terms):
   data = []
@@ -95,60 +80,50 @@ def extract_data(text, num_columns, search_terms):
         values.extend(["N/A", "N/A"])
       data.append(values)
       processed_entities.add(entity)
-      print("values", values)
-      print("value_line", value_lines)
-      # print("components", components)
-      print("num_columns", num_columns)
 
   columns = [
       "Entity", "Total Energy Schedule", "Total Actual data",
       "Net Deviation for the purpose of REC"
   ]
-  print(f"data = {data}")
+  
+  # print(f"data = {data}")
   d = pd.DataFrame(data, columns=columns)
   print("d", d)
   return d, date_str
 
 def fetch_data(year, month):
-      st.write("Extracting SRPC_REA")
       doc_type = "REA"
-      # month = "jan"
-      # year = "2024"
       search_terms = ["SPRNG,NPKUNTA", "Fortum Solar,PAVAGADA","SPRNG,PUGULUR"]  # entity names
       solar_entities = {"SPRNG,NPKUNTA", "Fortum Solar,PAVAGADA"}
       non_solar_entities = {"SPRNG,PUGULUR"}
-
       date_ = ""
 
       # Fetch PDF URLs
       pdf_urls, month_locations = fetch_pdf_urls(month, year, doc_type)
       solar_data, non_solar_data = [], []
 
-      for pdf_url, month_location in zip(pdf_urls, month_locations.values()):
-          with requests.get(pdf_url, verify=False) as response:
-              text = extract_text_from_pdf(response.content)
-              # print(f"text = {text}")
-              num_columns = find_table(text, search_terms)
-              print(f"num_columns = {num_columns}")
-              if num_columns:
-                  data, date_str = extract_data(text, num_columns, search_terms)
-                  date_ = date_str
-                  if data is not None:
-                      for row in data.values:
-                          # print(f"row = {row}")
-                          entity = row[0]
-                          if entity in solar_entities:
-                              solar_data.append((*row, month_location, pdf_url))
-                          elif entity in non_solar_entities:
-                              non_solar_data.append((*row, month_location, pdf_url))
-                          else:
-                              print(f"Entity '{entity}' not found in solar_entities or non_solar_entities sets.")
-
-      # if not solar_data and not non_solar_data:
-      #     print("No data found.")
-      #     return
+      if pdf_urls:
+        st.info("Extracting Data. Please Wait!")
+        for pdf_url, month_location in zip(pdf_urls, month_locations.values()):
+            with requests.get(pdf_url, verify=False) as response:
+                text = extract_text_from_pdf(response.content)
+                # print(f"text = {text}")
+                num_columns = find_table(text, search_terms)
+                # print(f"num_columns = {num_columns}")
+                if num_columns:
+                    data, date_str = extract_data(text, num_columns, search_terms)
+                    date_ = date_str
+                    if data is not None:
+                        for row in data.values:
+                            # print(f"row = {row}")
+                            entity = row[0]
+                            if entity in solar_entities:
+                                solar_data.append((*row, month_location, pdf_url))
+                            elif entity in non_solar_entities:
+                                non_solar_data.append((*row, month_location, pdf_url))
+                            else:
+                                print(f"Entity '{entity}' not found in solar_entities or non_solar_entities sets.")
       
-      if solar_data and non_solar_data:
         # Define column names
         solar_columns = [
             "Entity", "Total Energy Schedule", "Total Actual data",
@@ -167,7 +142,7 @@ def fetch_data(year, month):
         # solar_df.to_csv("solar_data.csv", index=False)
         # non_solar_df.to_csv("non_solar_data.csv", index=False)
 
-        print("Actual Meter Reading Available Upto :", date_)
+        # print("Actual Meter Reading Available Upto :", date_)
         filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
         sheet_name = "SRPC_REA"
 
@@ -209,8 +184,7 @@ def fetch_data(year, month):
                 ws2.cell(row=row_num, column=col_num, value=value)
         # Save the workbook
         wb.save(filename)
-        st.write("Extracted data for SRPC_REA")
+        st.success("Data Extracted ✨")
+        print("Data Extracted for SRPC_REA ✨")
       else:
-         print("No Data Found")
-         st.warning("No Data Found")
-         return
+        st.error("There's no data available for specified time frame.")
