@@ -54,7 +54,6 @@ def create_file(DSM_Daywise_St_rows , WS_Seller):
     DSM_Daywise_df = pd.DataFrame(DSM_Daywise_St_rows, columns=DSM_Daywise_St_cols)
     WS_Seller_df = pd.DataFrame(WS_Seller, columns=WS_Seller_cols)
 
-
     filename = f"Extracted Data_WRPC_SRPC_{datetime.now().strftime('%d-%m-%Y')}.xlsx"
     sheet_name = "SRPC_WA_DSM"
 
@@ -64,24 +63,23 @@ def create_file(DSM_Daywise_St_rows , WS_Seller):
         wb.save(filename)
     else:
         wb = load_workbook(filename)
+    
+    if 'Sheet' in wb.sheetnames:
+        default_sheet = wb['Sheet']
+        wb.remove(default_sheet)
 
     # Check if sheet exists
     if sheet_name not in wb.sheetnames:
         wb.create_sheet(title=sheet_name)
     ws2 = wb[sheet_name]
 
-    # # Write headers 
-    DSM_Daywise_headers = DSM_Daywise_df.columns
-    for col_num, header in enumerate(DSM_Daywise_headers, start=1):
-        cell = ws2.cell(row=1, column=col_num, value=header)
-        cell.font = Font(bold=True)
-
-    # # Write Data
-    for row_num, (_, row_data) in enumerate(DSM_Daywise_df.iterrows(), start=2):
-      for col_num, value in enumerate(row_data, start=1):
-          ws2.cell(row=row_num, column=col_num, value=value)
-    
     ws2.append([])
+    # # Write headers 
+    ws2.append(DSM_Daywise_St_cols)
+    for index, row in DSM_Daywise_df.iterrows():  # Iterate over DataFrame rows
+        row_list = row.to_list()  # Convert DataFrame row to a list
+        ws2.append(row_list)  # Append the row to the worksheet
+    
     ws2.append([])
 
     # # # Write headers 
@@ -98,16 +96,16 @@ def create_hyperlink(url, display_text):
     return f'=HYPERLINK("{url}","{display_text}")'
 
 def fetch_data(selected_year, selected_month):
-    st.warning("Please select the week for which you'd like to fetch data, then click 'Continue' below.")
     # Fetching data from the provided URL
     url = "https://www.srpc.kar.nic.in/html/xml-search/data/commercial.xml?cache="
     response = requests.get(url, verify=False)
     if response.status_code == 200:
-        print(f"response.status_code:{response.status_code}")
+        # print(f"response.status_code:{response.status_code}")
         xml_data = response.content
         root = ET.fromstring(xml_data)  # Parsing the XML data
         # Store the selected PDF URLs
         selected_urls = []
+        st.warning("Please select the week for which you'd like to fetch data, then click 'Continue' below.")
 
         # Extracting relevant information
         for document in root.findall('document'):
@@ -133,6 +131,7 @@ def fetch_data(selected_year, selected_month):
         keywords = ["SPRNG, NPKUNTA", "Sprng, Pugalur", "Fortum Solar"]
         if st.button('Continue'):
             if selected_urls:
+                st.info("Extracting data. Please Wait!")
                 for url in selected_urls:
                     with requests.get(url, verify=False) as response:
                         tables = extract_tables_from_pdf_url(url)
@@ -147,7 +146,7 @@ def fetch_data(selected_year, selected_month):
                                     DSM_Daywise_rows.append(row)
 
                 create_file(DSM_Daywise_rows, WS_Seller_rows)
-                st.success("Extracted SRPC WA DSM✨")
+                st.success("Data extracted ✨")
                 print("Extracted SRPC WA DSM✨")
             else:
                 st.error("Please select at least one URL before continuing.")
