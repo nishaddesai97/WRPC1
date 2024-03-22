@@ -27,9 +27,10 @@ def create_file(df, sheet_name):
     ws2 = wb[sheet_name]
 
     # Write specific column names as headers
+    ws2.append([])
     headers = ["RE Generator", "Schedule (MU)", "Actual (MU)", "Deviation (MU)", "Year", "PDF URL"]
     ws2.append(headers)
-
+    
     # Append data to the worksheet
     for index, row in df.iterrows():  # Iterate over DataFrame rows
         # Split the 'PDF URL' column into two separate columns for hyperlink function
@@ -140,7 +141,7 @@ def extract_data(year, title_filter):
                         pdf_links.append((title, link))
         # Search for the text in the multiple PDFs and append the results into one DataFrame
         df = search_text_in_multiple_pdfs(pdf_links, "Arinsun_RUMS", year)  # You can adjust the search text as needed
-        
+
         sheet_name = 'WRPC_Monthly Scheduled Revenue'
         create_file(df, sheet_name)
         print("Extracted WRPC_Monthly Scheduled Revenue✨")
