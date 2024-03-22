@@ -9,8 +9,7 @@ import streamlit as st
 import re
 import io  # Import io module
 import pdfplumber  # Alternative library for PDF processing
- 
-selected_pdf = []
+
 search_text = "Arinsun_RUMS"
 
 def create_file(df,fdf, sheet_name):
@@ -109,8 +108,7 @@ def first_row(extracted_text):
 
 # Function to fetch PDFs
 def fetch_pdfs(year, title_filter):
-    st.write("Extracting data for WRPC DSM UI Accounts")
-    st.warning("Please select files you wants to extract! Then click on  Continue Below")
+    st.warning("Please select the week for which you'd like to fetch data, then click 'Continue' below.")
     wrpc_base_url = "https://www.wrpc.gov.in"
     search_text = "Arinsun_RUMS"
     UI_link = wrpc_base_url + "/assets/data/UI_" + year + '.txt'
@@ -157,53 +155,53 @@ def fetch_pdfs(year, title_filter):
     checkbox_values = {url: st.checkbox(f"{title}: {url}") for url, title in url_data.items()}
 
     if st.button("Continue"):
+        selected_pdf = []
         for url, checked in checkbox_values.items():
             if checked == True:
                 selected_pdf.append(url_data[url])
 
-        table_data = []
-        first_line_table_data = []
+        if selected_pdf:
+            st.info("Extracting data. Please Wait!")
+            table_data = []
+            first_line_table_data = []
 
-        for pdf_url in selected_pdf:
-            print(pdf_url)
+            for pdf_url in selected_pdf:
+                print(pdf_url)
 
-            extracted_text = extract_text_from_pdf(pdf_url)
-            # Check if extracted text is bytes-like object and decode it to string
-            if isinstance(extracted_text, bytes):
-                extracted_text = extracted_text.decode("utf-8")
+                extracted_text = extract_text_from_pdf(pdf_url)
+                # Check if extracted text is bytes-like object and decode it to string
+                if isinstance(extracted_text, bytes):
+                    extracted_text = extracted_text.decode("utf-8")
 
+                # break
+                pattern_combined = re.compile(r'(\d{2}-\w{3}|Total)\s(Arinsun_RUMS)\s(\d+\.\d+)\s(\d+\.\d+)\s?(\d+\.\d+)?\s?(\d+\.\d+)?\s?(\-?\d+\.\d+)?')
+                matches = pattern_combined.findall(extracted_text)
+                headers = ['Date', 'Entity', 'Injection', 'Schedule', 'DSM Payable', 'DSM Receivable', 'Net DMC']
+                structured_data = []
 
-            # break
-            pattern_combined = re.compile(r'(\d{2}-\w{3}|Total)\s(Arinsun_RUMS)\s(\d+\.\d+)\s(\d+\.\d+)\s?(\d+\.\d+)?\s?(\d+\.\d+)?\s?(\-?\d+\.\d+)?')
-            matches = pattern_combined.findall(extracted_text)
-            headers = ['Date', 'Entity', 'Injection', 'Schedule', 'DSM Payable', 'DSM Receivable', 'Net DMC']
-            structured_data = []
+                for match in matches:
+                    row_dict = dict(zip(headers, match))
+                    row_dict['PDF URL'] = create_hyperlink(pdf_url, pdf_url)
+                    structured_data.append(row_dict)
 
-            for match in matches:
-                row_dict = dict(zip(headers, match))
-                row_dict['PDF URL'] = create_hyperlink(pdf_url, pdf_url)
-                structured_data.append(row_dict)
+                table_data.append({})
+                table_data.extend(structured_data)
 
-            table_data.append({})
-            table_data.extend(structured_data)
+                first_line = first_row(extracted_text)
+                first_line_split = first_line.split()
+                f_headers = ['Sr.', 'Name of Entity', 'DSM Charges (Rs.) Payable', 'DSM Charges (Rs.) Receivable', 'Net DSM(Rs.)', 'Net DSM(Rs.) Payable/Receivable' ,]
+                first_line_structured_data = []
+                frow_dict = dict(zip(f_headers, first_line_split))
+                frow_dict['PDF URL'] = create_hyperlink(pdf_url, pdf_url)
+                first_line_structured_data.append(frow_dict)
+                first_line_table_data.extend(first_line_structured_data)
 
-            first_line = first_row(extracted_text)
-            # print("First line:", first_line)
-            # Split the first_line string into a list of values
-            first_line_split = first_line.split()
-            f_headers = ['Sr.', 'Name of Entity', 'DSM Charges (Rs.) Payable', 'DSM Charges (Rs.) Receivable', 'Net DSM(Rs.)', 'Net DSM(Rs.) Payable/Receivable' ,]
-            first_line_structured_data = []
-            frow_dict = dict(zip(f_headers, first_line_split))
-            frow_dict['PDF URL'] = create_hyperlink(pdf_url, pdf_url)
-            first_line_structured_data.append(frow_dict)
-            first_line_table_data.extend(first_line_structured_data)
+            df = pd.DataFrame(table_data)
+            fdf = pd.DataFrame(first_line_table_data)
 
-        df = pd.DataFrame(table_data)
+            sheet_name = 'WRPC_DSM'
+            create_file(df,fdf, sheet_name)
+            st.success("Data extracted ✨")
+            print("Data extracted for WRPC DSM UI Accounts✨")
         
-        fdf = pd.DataFrame(first_line_table_data)
-        # st.write("FDF" ,fdf)
-
-        sheet_name = 'WRPC_DSM'
-        create_file(df,fdf, sheet_name)
-        st.write("Data extracted for WRPC DSM UI Accounts")
-        # st.write(df)
+        else: st.error("Please select at least one URL before continuing.")
