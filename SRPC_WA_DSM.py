@@ -128,7 +128,7 @@ def fetch_data(selected_year, selected_month):
                 #     st.error("No data were found for the selected period.")
 
         DSM_Daywise_rows, WS_Seller_rows = [], []
-        keywords = ["SPRNG, NPKUNTA", "Sprng, Pugalur", "Fortum Solar"]
+        keywords = ["SPRNG, NPKUNTA", "Sprng, Pugalur", "Fortum Solar", "Sprng Solar India Pvt.Ltd,PAVAGADA"]
         if st.button('Continue'):
             if selected_urls:
                 st.info("Extracting data. Please Wait!")
