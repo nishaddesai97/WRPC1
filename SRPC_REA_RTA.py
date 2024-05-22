@@ -93,8 +93,8 @@ def extract_data(text, num_columns, search_terms):
 
 def fetch_data(year, month):
       doc_type = "REA"
-      search_terms = ["SPRNG,NPKUNTA", "Fortum Solar,PAVAGADA","SPRNG,PUGULUR", "Sprng Solar India Pvt.Ltd,PAVAGADA"]  # entity names
-      solar_entities = {"SPRNG,NPKUNTA", "Fortum Solar,PAVAGADA", "Sprng Solar India Pvt.Ltd,PAVAGADA"}
+      search_terms = ["SPRNG,NPKUNTA", "Fortum Solar,PAVAGADA","SPRNG,PUGULUR", "Sprng Solar India"]  # entity names,Sprng Solar India Pvt.Ltd,PAVAGADA 
+      solar_entities = {"SPRNG,NPKUNTA", "Fortum Solar,PAVAGADA", "Sprng Solar India"}
       non_solar_entities = {"SPRNG,PUGULUR"}
       date_ = ""
 
