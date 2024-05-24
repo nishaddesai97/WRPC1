@@ -13,13 +13,14 @@ import io
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def fetch_pdf_urls(month, year, doc_type):
-  base_url = "https://www.srpc.kar.nic.in/website/2023/commercial/"
+  base_url = f"https://www.srpc.kar.nic.in/website/{year}/commercial/"
+  
   pdf_urls = []
   month_locations = {}
   month_location = ["p", "f"]
   for ml in month_location:
     url = f"{base_url}{doc_type.lower()}{month[:3].lower()}{year[-2:]}{ml}.pdf"
-
+    
     with requests.get(url, verify=False) as response:
       if response.status_code == 200:
         pdf_urls.append(url)
